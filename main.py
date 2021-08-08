@@ -5,6 +5,10 @@ from pybricks.parameters import Button
 
 from menu import wait_for_button
 
+# Testing Git Hub
+# Change on the 6520
+
+
 # Initialize the EV3.
 ev3 = EV3Brick()
 
