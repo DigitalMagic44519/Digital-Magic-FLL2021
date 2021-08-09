@@ -7,6 +7,7 @@ from menu import wait_for_button
 
 # Testing Git Hub
 # Change on the 6520
+# Change on the 6450
 
 
 # Initialize the EV3.
@@ -18,7 +19,7 @@ while True:
 
     # Now you can do something, based on which button was pressed.
 
-    # In this demo, we just play a different sound for each button.
+    # In this demo, we just play a different sound for eachps -ef | grep  button.
     if button == Button.LEFT:
         ev3.speaker.beep(200)
     elif button == Button.RIGHT:
