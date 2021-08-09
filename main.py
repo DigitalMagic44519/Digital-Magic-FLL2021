@@ -6,8 +6,8 @@ from pybricks.parameters import Button
 from menu import wait_for_button
 
 # Testing Git Hub
-# Change on the 6520
-# Change on the 6450
+# Change on the 6520 1
+# Change on the 6450 2
 
 
 # Initialize the EV3.
