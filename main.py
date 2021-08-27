@@ -7,7 +7,7 @@ from menu import wait_for_button
 
 # Testing Git Hub
 # Change on the 6520 1
-# Change on the 6450 5
+# Change on the 6450 6
 # Change on Git Hub  1
 
 
