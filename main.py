@@ -16,6 +16,8 @@
 # 10-16-21 dlc  picked up where lily left off on run1b
 # 10-17-21 kahk made the function for the forklift retrofitted from last year
 # 10-17-21 ipk  added run2 function
+# 10-19-21 ipk  added back up to run2 to get unused cpacity
+# 10-26-21 ipk  more work on perfecting run2 and run1b
 # ---------------------------------------------------------------
  
 # these are the libraries of code writen by pybricks
@@ -57,27 +59,20 @@ def run2():
     robot.straight(150)
 
     #follow line over to other truck
-    followline(250,75)
+    followline(260,75)
     ev3.speaker.beep(800)  #DEBUG
 
     #turn toward the other truck
-    #robot.turn(200)
-    #ev3.speaker.beep(800)  #DEBUG
-
-    #drive forward and hook up
-    #robot.straight(50)
-    #ev3.speaker.beep(800)  #DEBUG
-
-    # Set the drive base speed and turn rate.
-    # robot.drive(speed, turn_rate)
-
-    #turn toward the other truck
-    robot.drive(speed=75, turn_rate=40)
+    robot.drive(speed=75, turn_rate=38)
     wait(2500)
     robot.straight(150)
     robot.stop()
     ev3.speaker.beep(800)  #DEBUG
-    robot.straight(-1000)
+
+    #back up to push unused capacity
+    robot.drive(speed=-1000, turn_rate=40)
+    wait(2000)
+    robot.stop()
 
 # ---------------------------------------------------------------
 # This is the function for the forklift retrofitted from last year
@@ -113,7 +108,7 @@ def followline(loop, speed):
 
     # For example, if the light value deviates from the threshold by 10, the robot
     # steers at 10*1.2 = 12 degrees per second.
-    PROPORTIONAL_GAIN = .8
+    PROPORTIONAL_GAIN = 1.2
 
     
     
@@ -152,7 +147,7 @@ def run1b():
     #drive to line 
     robot.straight(280)
 
-    #follow line over unused capacity
+    """ #follow line over unused capacity
     followline(230,75)
 
     robot.stop()
@@ -170,7 +165,12 @@ def run1b():
 
      #follow line to just before it turns left
     followline(340,75)
-    ev3.speaker.beep(800)  #DEBUG
+    ev3.speaker.beep(800)  
+    robot.stop()#DEBUG """
+
+    followline(570,75)
+
+    robot.stop()
 
     #drive strait ahead
     robot.straight(230)
@@ -215,7 +215,7 @@ def run1b():
     am.run_time(speed=700,time=300)
 
     robot.turn(-90)
-
+wait(2500)
 # ---------------------------------------------------------------
 # This is function for our first set of misions but with a different 
 # strategy using line following. 
