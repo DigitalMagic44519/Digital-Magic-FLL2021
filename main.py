@@ -15,9 +15,11 @@
 # 10-16-21 cjh  work with coach to pass loop value into line follow function
 # 10-16-21 dlc  picked up where lily left off on run1b
 # 10-17-21 kahk made the function for the forklift retrofitted from last year
-# 10-17-21 ipk  added run2 function
-# 10-19-21 ipk  added back up to run2 to get unused cpacity
-# 10-26-21 ipk  more work on perfecting run2 and run1b
+# 10-17-21 ipk  added plattooningtrucks function
+# 10-19-21 ipk  added back up to plattooningtrucks to get unused cpacity
+# 10-26-21 ipk  more work on perfecting plattooningtrucks and run1b
+# 10-30-21 b?b  worked on run1b
+# 11-03-21 kahk created a cargo plane only function
 # ---------------------------------------------------------------
  
 # these are the libraries of code writen by pybricks
@@ -46,38 +48,10 @@ line_sensor = ColorSensor(Port.S4)
 # Initialize the drive base. ecv put in measurements 9/28 (9cm=90mm) (6cm=60mm)
 robot = DriveBase(left_motor, right_motor, wheel_diameter=90, axle_track=60)
 
-#***** OUR FUNCTIONS START HERE *****
-
-
-# ---------------------------------------------------------------
-# This is the function for run 2 plattooning trucks
-#   
-#    
-# ---------------------------------------------------------------
-def run2(): 
-    #drive to line 
-    robot.straight(150)
-
-    #follow line over to other truck
-    followline(260,75)
-    ev3.speaker.beep(800)  #DEBUG
-
-    #turn toward the other truck
-    robot.drive(speed=75, turn_rate=38)
-    wait(2500)
-    robot.straight(150)
-    robot.stop()
-    ev3.speaker.beep(800)  #DEBUG
-
-    #back up to push unused capacity
-    robot.drive(speed=-1000, turn_rate=40)
-    wait(2000)
-    robot.stop()
+#***** OUR REUSABLE FUNCTIONS START HERE *****
 
 # ---------------------------------------------------------------
 # This is the function for the forklift retrofitted from last year
-#   <comment about how distance determined>
-#   <comment about speed> 
 # ---------------------------------------------------------------
 def forkliftmove(direction,time):
     speed=200000
@@ -108,7 +82,9 @@ def followline(loop, speed):
 
     # For example, if the light value deviates from the threshold by 10, the robot
     # steers at 10*1.2 = 12 degrees per second.
-    PROPORTIONAL_GAIN = 1.2
+
+    #PROPORTIONAL_GAIN = 1.2
+    PROPORTIONAL_GAIN = .8
 
     
     
@@ -137,92 +113,75 @@ def followline(loop, speed):
     #stop and exit
     robot.stop()
 
-# ---------------------------------------------------------------
-# This is the function for our first set of misions
-# 1. Flip Engine 
-# 2. Cargo Plane
-# ---------------------------------------------------------------
 
-def run1b():
+
+#***** OUR MISSION FUNCTIONS START HERE *****
+
+
+# ---------------------------------------------------------------
+# way more simple cargo plane only function
+# ---------------------------------------------------------------
+def cargoplane():
+
+    #position the attachment arm
+    am.run_time(speed=-500,time=700)
+
+    #must stop to change speed
+    robot.stop()
+
+    #turn the speed down a little from default
+    #Default: (209, 837, 400, 1600)
+    #robot.settings(109, 837, 400, 1600)
+    robot.settings(209, 200, 400, 1600)
+
+
     #drive to line 
-    robot.straight(280)
-
-    """ #follow line over unused capacity
-    followline(230,75)
-
-    robot.stop()
-    robot.settings(600, 837, 400, 1600)
-
-
-    #hockey unused capacity off map
-    robot.turn(-130)
-
-    robot.stop()
-    robot.settings(100, 837, 400, 1600)
-
-    #turn robot back to line
-    robot.turn(90)
-
-     #follow line to just before it turns left
-    followline(340,75)
+    robot.straight(680)
     ev3.speaker.beep(800)  
-    robot.stop()#DEBUG """
+    
+    #bring da hammer down
+    am.run_time(speed=1500,time=1200)
 
-    followline(570,75)
-
+    #must stop to change speed
     robot.stop()
 
-    #drive strait ahead
-    robot.straight(230)
-    ev3.speaker.beep(800)  #DEBUG
-    
-    #drive towards motor
-    robot.turn(45)
-    robot.straight(20)
+    #turn the speed down a little from default
+    #(209, 837, 400, 1600)
+    robot.settings(509, 837, 400, 1600)
 
-    # Lift the attachment fliping motor
-    am.run_time(speed=-500,time=900)
-    
-    # back it up
-    robot.straight(-180)
+    #drive home fast
+    robot.straight(-750)
 
-    # turn to face the wall
-    robot.turn(-90) 
 
-    # go square up on wall
-    robot.straight(300)
-
-    # back up again 
-    robot.straight(-180)
-
-    # turn and face the plane
-    robot.turn(-90) 
-
-    #lower arm to clear tail
-    am.run_time(speed=500,time=500)
-        
-    #drive closer to plane
-    robot.straight(20)
-    
-    #flip down plane door
-    am.run_time(speed=500,time=400)
-    
-    #try to get over block 
-    am.run_time(speed=-500,time=300)
-
-    robot.turn(90)
-
-    am.run_time(speed=700,time=300)
-
-    robot.turn(-90)
-wait(2500)
 # ---------------------------------------------------------------
-# This is function for our first set of misions but with a different 
-# strategy using line following. 
+# This is the function for plattooning trucks  
+# ---------------------------------------------------------------
+def plattooningtrucks(): 
+    #drive to line 
+    robot.straight(150)
+
+    #follow line over to other truck
+    followline(260,75)
+    ev3.speaker.beep(800)  #DEBUG
+
+    #turn toward the other truck
+    robot.drive(speed=75, turn_rate=38)
+    wait(2500)
+    robot.straight(150)
+    robot.stop()
+    ev3.speaker.beep(800)  #DEBUG
+
+    #back up to push unused capacity
+    robot.drive(speed=-1000, turn_rate=40)
+    wait(2000)
+    robot.stop()
+
+
+# ---------------------------------------------------------------
+# This is function for our first set of misions 
 # 1. Flip Engine 
 # 2. Cargo Plane
 # ---------------------------------------------------------------
-
 def run1():
     #turn the speed down a little from default
     #(209, 837, 400, 1600)
@@ -281,7 +240,175 @@ def run1():
     #am.run_time(speed=1000,time=1000)
     #am.run_time(speed=-1000,time=1000)
 
+
+# ---------------------------------------------------------------
+# This is function for our first set of misions but with a different 
+# strategy using line following.
+# 1. Flip Engine 
+# 2. Cargo Plane
+# ---------------------------------------------------------------
+def run1b():
+
+    robot.stop()
+    #turn the speed down a little from default
+    #(209, 837, 400, 1600)
+    robot.settings(109, 837, 400, 1600)
+
+    #drive to line 
+    robot.straight(280)
+
+    """ #follow line over unused capacity
+    followline(230,75)
+
+    robot.stop()
+    robot.settings(600, 837, 400, 1600)
+
+
+    #hockey unused capacity off map
+    robot.turn(-130)
+        ev3.speaker.beep(1000)
+        ev3.speaker.beep(800)
+        ev3.speaker.beep(600)
+        ev3.speaker.beep(1000)
+        ev3.speaker.beep(800)
+        ev3.speaker.beep(600)
+    robot.stop()
+    robot.settings(100, 837, 400, 1600)
+
+    #turn robot back to line
+    robot.turn(90)
+
+     #follow line to just before it turns left
+    followline(340,75)
+    ev3.speaker.beep(800)  
+    robot.stop()#DEBUG """
+
+    #follow line (until right before the sharp turn)
+    followline(550,75)
+
+    robot.stop()
     
+    ev3.speaker.beep(800)  #DEBUG
+    # wait(5000) #DEBUG
+
+    #drive strait ahead
+    robot.straight(210)
+    
+    ev3.speaker.beep(800)  #DEBUG
+    # wait(5000) #DEBUG
+
+    
+    #drive towards motor
+    robot.turn(60)
+    #robot.straight(15)
+
+    # Lift the attachment fliping motor
+    am.run_time(speed=-500,time=1700)
+    
+    # back it up
+    robot.straight(-170)
+
+    # turn to face the wall
+    robot.turn(-90) 
+
+    # go square up on wall
+    robot.turn(-45)
+    robot.straight(800)
+
+    # back up again 
+    robot.straight(-180)
+
+    # turn and face the plane
+    robot.turn(-105) 
+
+    #lower arm to clear tail
+    #I made the chenge so this is no longer needed-Brayden
+    #am.run_time(speed=500,time=500)
+        
+    #drive closer to plane
+    robot.straight(20)
+    
+    #flip down plane door
+    am.run_time(speed=500,time=1100)
+    
+    #try to get over block 
+    am.run_time(speed=-500,time=500)
+
+    robot.turn(90)
+
+    am.run_time(speed=500,time=500)
+
+    robot.turn(-90)
+
+
+# ---------------------------------------------------------------
+# This is the function for our first set of misions using line 
+# following anf forklift
+# 1. Flip Engine 
+# 2. Cargo Plane
+# ---------------------------------------------------------------
+def run1c():
+    # ev3.speaker.beep(800)
+    # test forklift 7000 is max range
+    # forkliftmove("up",7000)
+    # forkliftmove("down",7000)
+
+    robot.stop()
+    #turn the speed down a little from default of (209, 837, 400, 1600)
+    robot.settings(109, 837, 400, 1600)
+
+    #drive to line 
+    robot.straight(280)
+
+    followline(570,75)
+
+    robot.stop()
+
+    #drive strait ahead
+    robot.straight(230)
+    ev3.speaker.beep(800)  #DEBUG
+    
+    #drive towards motor
+    #robot.turn(60)
+    #robot.straight(20)
+
+    # Lift the attachment fliping motor
+    #am.run_time(speed=-500,time=900)
+    
+    # back it up
+    #robot.straight(-180)
+
+    # turn to face the wall
+    #robot.turn(-90) 
+
+    # go square up on wall
+    #robot.straight(400)
+
+    # back up again 
+    #robot.straight(-180)
+
+    # turn and face the plane
+    #robot.turn(-90) 
+
+    #lower arm to clear tail
+    #am.run_time(speed=500,time=500)
+        
+    #drive closer to plane
+    #robot.straight(20)
+    
+    #flip down plane door
+    #am.run_time(speed=500,time=400)
+    
+    #try to get over block 
+    #am.run_time(speed=-500,time=300)
+
+    #robot.turn(90)
+
+    #am.run_time(speed=700,time=300)
+
+    #robot.turn(-90)
+
+  
 # ---------------------------------------------------------------
 # This is the button code from the example code
 # ---------------------------------------------------------------
@@ -294,11 +421,8 @@ while True:
 
     # Now you can do something, based on which button was pressed.
 
-    # In this demo, we just play a different sound for eachps -ef | grep  button.
     if button == Button.LEFT:
-
-        # using left button for calling run 1
-        run1()
+        cargoplane()
         
     elif button == Button.RIGHT:
         #do not use this button it sticks
@@ -308,20 +432,7 @@ while True:
         run1b()
 
     elif button == Button.DOWN:
-        ev3.speaker.beep(800)
-        # test forklift 7000 is max range
-        forkliftmove("up",7000)
-        forkliftmove("down",7000)
+        run1c()
 
     elif button == Button.CENTER:
-        ev3.speaker.beep(1000)
-        ev3.speaker.beep(800)
-        ev3.speaker.beep(600)
-        ev3.speaker.beep(1000)
-        ev3.speaker.beep(800)
-        ev3.speaker.beep(600)
-        run2()
-
-     
-
-  
+        plattooningtrucks()
