@@ -20,6 +20,8 @@
 # 10-26-21 ipk  more work on perfecting plattooningtrucks and run1b
 # 10-30-21 b?b  worked on run1b
 # 11-03-21 kahk created a cargo plane only function
+# 11-09-21 ipk  created a flip engine only function
+# 11-09-21 ipk  a fuction for changing straight speed and acceleration
 # ---------------------------------------------------------------
  
 # these are the libraries of code writen by pybricks
@@ -48,8 +50,24 @@ line_sensor = ColorSensor(Port.S4)
 # Initialize the drive base. ecv put in measurements 9/28 (9cm=90mm) (6cm=60mm)
 robot = DriveBase(left_motor, right_motor, wheel_diameter=90, axle_track=60)
 
+# ipk did creating and Initialize variables for speed and acceleration
+#(209, 837, 400, 1600)
+straight_speed = 209
+straight_acceleration = 837
+turn_rate = 400
+turn_acceleration = 1600
+
 #***** OUR REUSABLE FUNCTIONS START HERE *****
 
+# ---------------------------------------------------------------
+# This is the function for changing the straight drive speed
+#  Example: straightspeed(100) to change speed to 100 mm/second
+# ---------------------------------------------------------------
+def straightspeed(speed):
+    straight_speed = speed
+    robot.stop()
+    robot.settings(straight_speed, straight_acceleration, turn_rate, turn_acceleration) 
+    
 # ---------------------------------------------------------------
 # This is the function for the forklift retrofitted from last year
 # ---------------------------------------------------------------
@@ -116,6 +134,50 @@ def followline(loop, speed):
 
 
 #***** OUR MISSION FUNCTIONS START HERE *****
+# ---------------------------------------------------------------
+# This is a simplified function from the old run1b() that just does
+# Flip Engine 
+#
+# ---------------------------------------------------------------
+def flipengine():
+
+
+    #turn the speed down a little from default
+    straightspeed(109)
+
+
+    #drive to line 
+    robot.straight(280)
+
+
+    #follow line (until right before the sharp turn)
+    followline(550,75)
+
+    robot.stop()
+    
+    ev3.speaker.beep(800)  #DEBUG
+    # wait(5000) #DEBUG
+
+    #drive strait ahead
+    robot.straight(210)
+    
+    ev3.speaker.beep(800)  #DEBUG
+    # wait(5000) #DEBUG
+
+    
+    #drive towards motor
+    robot.turn(60)
+    #robot.straight(15)
+
+    # Lift the attachment fliping motor
+    am.run_time(speed=-500,time=1700)
+    
+
+
+    #bring it on home 
+    #turn the speed up 
+    straightspeed(500)
+    robot.straight(-800)
 
 
 # ---------------------------------------------------------------
@@ -124,15 +186,13 @@ def followline(loop, speed):
 def cargoplane():
 
     #position the attachment arm
-    am.run_time(speed=-500,time=700)
+    am.run_time(speed=250,time=700)
 
     #must stop to change speed
     robot.stop()
 
-    #turn the speed down a little from default
-    #Default: (209, 837, 400, 1600)
-    #robot.settings(109, 837, 400, 1600)
-    robot.settings(209, 200, 400, 1600)
+    #turn the speed back to default
+    straightspeed(109)
 
 
     #drive to line 
@@ -145,11 +205,8 @@ def cargoplane():
     #must stop to change speed
     robot.stop()
 
-    #turn the speed down a little from default
-    #(209, 837, 400, 1600)
-    robot.settings(509, 837, 400, 1600)
-
     #drive home fast
+    straightspeed(500)
     robot.straight(-750)
 
 
@@ -157,23 +214,28 @@ def cargoplane():
 # This is the function for plattooning trucks  
 # ---------------------------------------------------------------
 def plattooningtrucks(): 
+
+    #turn the speed down a little from default
+    straightspeed(109)
+
     #drive to line 
     robot.straight(150)
 
     #follow line over to other truck
     followline(260,75)
-    ev3.speaker.beep(800)  #DEBUG
 
-    #turn toward the other truck
+    #turn toward the other truck.  The wait is how long it turns
+    #robot.drive(speed=75, turn_rate=40)
     robot.drive(speed=75, turn_rate=38)
-    wait(2500)
-    robot.straight(150)
-    robot.stop()
-    ev3.speaker.beep(800)  #DEBUG
+    wait(2400)
 
-    #back up to push unused capacity
-    robot.drive(speed=-1000, turn_rate=40)
-    wait(2000)
+    #push the truck onto the latch
+    robot.straight(120)
+
+    #back up to push unused capacity - the wait is how long it turns
+    robot.drive(speed=-1000, turn_rate=50)
+    wait(1200)
+    robot.straight(-300)
     robot.stop()
 
 
@@ -184,8 +246,7 @@ def plattooningtrucks():
 # ---------------------------------------------------------------
 def run1():
     #turn the speed down a little from default
-    #(209, 837, 400, 1600)
-    robot.settings(109, 837, 400, 1600)
+    straightspeed(100)
 
     # Drive over and aline to the wall
     robot.straight(1000)
@@ -241,6 +302,7 @@ def run1():
     #am.run_time(speed=-1000,time=1000)
 
 
+
 # ---------------------------------------------------------------
 # This is function for our first set of misions but with a different 
 # strategy using line following.
@@ -251,37 +313,11 @@ def run1b():
 
     robot.stop()
     #turn the speed down a little from default
-    #(209, 837, 400, 1600)
-    robot.settings(109, 837, 400, 1600)
+    straightspeed(100)
 
     #drive to line 
     robot.straight(280)
 
-    """ #follow line over unused capacity
-    followline(230,75)
-
-    robot.stop()
-    robot.settings(600, 837, 400, 1600)
-
-
-    #hockey unused capacity off map
-    robot.turn(-130)
-        ev3.speaker.beep(1000)
-        ev3.speaker.beep(800)
-        ev3.speaker.beep(600)
-        ev3.speaker.beep(1000)
-        ev3.speaker.beep(800)
-        ev3.speaker.beep(600)
-    robot.stop()
-    robot.settings(100, 837, 400, 1600)
-
-    #turn robot back to line
-    robot.turn(90)
-
-     #follow line to just before it turns left
-    followline(340,75)
-    ev3.speaker.beep(800)  
-    robot.stop()#DEBUG """
 
     #follow line (until right before the sharp turn)
     followline(550,75)
@@ -355,7 +391,7 @@ def run1c():
 
     robot.stop()
     #turn the speed down a little from default of (209, 837, 400, 1600)
-    robot.settings(109, 837, 400, 1600)
+    straightspeed(100)
 
     #drive to line 
     robot.straight(280)
@@ -403,7 +439,6 @@ def run1c():
     #am.run_time(speed=-500,time=300)
 
     #robot.turn(90)
-
     #am.run_time(speed=700,time=300)
 
     #robot.turn(-90)
@@ -429,10 +464,11 @@ while True:
         ev3.speaker.beep(600)
 
     elif button == Button.UP:
-        run1b()
+        flipengine()
 
     elif button == Button.DOWN:
-        run1c()
+        #plattooningtrucks2()
+        ev3.speaker.beep(700)
 
     elif button == Button.CENTER:
         plattooningtrucks()
