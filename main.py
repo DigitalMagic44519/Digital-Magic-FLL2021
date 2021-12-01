@@ -24,6 +24,12 @@
 # 11-09-21 ipk  a fuction for changing straight speed and acceleration
 # ---------------------------------------------------------------
  
+
+# ---------------------------------------------------------------
+# Initialization section
+#  Mostly from example code
+# ---------------------------------------------------------------
+
 # these are the libraries of code writen by pybricks
 from pybricks.hubs import EV3Brick
 from pybricks.parameters import Port, Stop, Direction, Button, Color 
@@ -57,7 +63,9 @@ straight_acceleration = 837
 turn_rate = 400
 turn_acceleration = 1600
 
-#***** OUR REUSABLE FUNCTIONS START HERE *****
+# ---------------------------------------------------------------
+# These are our reusable functions Ian will explain
+# ------------------------------------------------------------
 
 # ---------------------------------------------------------------
 # This is the function for changing the straight drive speed
@@ -162,10 +170,7 @@ def flipengine():
     robot.straight(210)
     
     ev3.speaker.beep(800)  #DEBUG
-    # wait(5000) #DEBUG
-
-    
-    #drive towards motor
+    # wait(5000) #DEBUGThis is the function for changing the straight drive speed
     robot.turn(60)
     #robot.straight(15)
 
@@ -186,8 +191,8 @@ def flipengine():
 def cargoplane():
 
     #position the attachment arm
-    am.run_time(speed=250,time=700)
-
+    am.run_time(speed=250,time=800)
+]
     #must stop to change speed
     robot.stop()
 
@@ -467,7 +472,6 @@ while True:
         flipengine()
 
     elif button == Button.DOWN:
-        #plattooningtrucks2()
         ev3.speaker.beep(700)
 
     elif button == Button.CENTER:
