@@ -18,10 +18,16 @@
 # 10-17-21 ipk  added plattooningtrucks function
 # 10-19-21 ipk  added back up to plattooningtrucks to get unused cpacity
 # 10-26-21 ipk  more work on perfecting plattooningtrucks and run1b
-# 10-30-21 b?b  worked on run1b
-# 11-03-21 kahk created a cargo plane only function
-# 11-09-21 ipk  created a flip engine only function
-# 11-09-21 ipk  a fuction for changing straight speed and acceleration
+# 10-30-21 bgb  worked on run1b
+# 11-03-21 kahk created a cargo plane mission only function
+# 11-09-21 ipk  created a flip engine mission only function
+# 11-09-21 ipk  a reusable function for changing straight speed and acceleration
+# 12-05-21 ipk  created a connect cargo mission function
+# 12-05-21 ipk  created innovation model mission function
+# 12-05-21 ipk  changed button picture
+# 12-05-21 kahk worked more on innovation model mission
+# 12-05-21 lmh  worked more on innovation model mission
+# 12-05-21 ipk  created package dispenser reusable function
 # ---------------------------------------------------------------
  
 
@@ -88,6 +94,13 @@ def forkliftmove(direction,time):
     am.run_time(speed,time)
 
 # ---------------------------------------------------------------
+# This is the reusable function for the package dispenser
+# ---------------------------------------------------------------
+def packagedispenser():
+    am.run_time(-2000,700)# speed and time, negative is dispense
+    am.run_time(2000,700)# speed and time, positive is reset
+
+# ---------------------------------------------------------------
 # This is the function to follow line. from example
 #   loop = how many times we loop = distance travelled
 #   speed = how fast it follows the line
@@ -111,9 +124,6 @@ def followline(loop, speed):
 
     #PROPORTIONAL_GAIN = 1.2
     PROPORTIONAL_GAIN = .8
-
-    
-    
 
     # variable to store what loop we are on
     i=1
@@ -150,7 +160,7 @@ def followline(loop, speed):
 def flipengine():
 
 
-    #turn the speed down a little from default
+    #set the speed
     straightspeed(109)
 
 
@@ -191,12 +201,12 @@ def flipengine():
 def cargoplane():
 
     #position the attachment arm
-    am.run_time(speed=250,time=800)
-]
+    am.run_time(speed=250,time=900)
+
     #must stop to change speed
     robot.stop()
 
-    #turn the speed back to default
+    #set the speed
     straightspeed(109)
 
 
@@ -204,7 +214,7 @@ def cargoplane():
     robot.straight(680)
     ev3.speaker.beep(800)  
     
-    #bring da hammer down
+    #bring da hammer down slightly
     am.run_time(speed=1500,time=1200)
 
     #must stop to change speed
@@ -220,7 +230,7 @@ def cargoplane():
 # ---------------------------------------------------------------
 def plattooningtrucks(): 
 
-    #turn the speed down a little from default
+    #set the speed
     straightspeed(109)
 
     #drive to line 
@@ -242,6 +252,49 @@ def plattooningtrucks():
     wait(1200)
     robot.straight(-300)
     robot.stop()
+
+# ---------------------------------------------------------------
+# This is the function for connect cargo   
+# ---------------------------------------------------------------
+def connectcargo(): 
+
+    #set the speed
+    straightspeed(200)
+
+    #drive to circle 
+    robot.straight(620)
+
+    #drive back 
+    robot.straight(-700)
+
+# ---------------------------------------------------------------
+# This is the function for delivering innovation model  
+# ---------------------------------------------------------------
+def innovationmodel(): 
+
+    #set the speed
+    straightspeed(130)
+
+    #set the speed
+    straightspeed(150)
+
+    #drive to circle 
+    robot.straight(1130)
+
+    #turn towards circle
+    robot.turn(-50)
+
+    #drive back a tiny bit
+    robot.straight(-70)
+
+    #turn toward door
+    robot.turn(160)
+
+    #drive toward door
+    robot.straight(350)
+
+    #deliver package
+    packagedispenser()
 
 
 # ---------------------------------------------------------------
@@ -465,14 +518,16 @@ while True:
         cargoplane()
         
     elif button == Button.RIGHT:
-        #do not use this button it sticks
-        ev3.speaker.beep(600)
+        #this is the button that sticks
+        connectcargo()
 
     elif button == Button.UP:
         flipengine()
 
     elif button == Button.DOWN:
-        ev3.speaker.beep(700)
+        innovationmodel()
+        #packagedispenser()  this an example of how we tested our code using reusable functions
+        
 
     elif button == Button.CENTER:
         plattooningtrucks()
