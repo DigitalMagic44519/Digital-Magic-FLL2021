@@ -28,6 +28,8 @@
 # 12-05-21 kahk worked more on innovation model mission
 # 12-05-21 lmh  worked more on innovation model mission
 # 12-05-21 ipk  created package dispenser reusable function
+# 12-06-21 kahk worked more tweaking innovation model mission
+# 12-10-21 ipk  tweaks for clean wheels
 # ---------------------------------------------------------------
  
 
@@ -65,7 +67,7 @@ robot = DriveBase(left_motor, right_motor, wheel_diameter=90, axle_track=60)
 # ipk did creating and Initialize variables for speed and acceleration
 #(209, 837, 400, 1600)
 straight_speed = 209
-straight_acceleration = 837
+straight_acceleration = 837 #837
 turn_rate = 400
 turn_acceleration = 1600
 
@@ -237,18 +239,20 @@ def plattooningtrucks():
     robot.straight(150)
 
     #follow line over to other truck
-    followline(260,75)
+    followline(300,75) #260
+    ev3.speaker.beep(800)  #DEBUG
 
     #turn toward the other truck.  The wait is how long it turns
     #robot.drive(speed=75, turn_rate=40)
-    robot.drive(speed=75, turn_rate=38)
-    wait(2400)
+    robot.drive(speed=75, turn_rate=30)
+    wait(1400) #2400
+    ev3.speaker.beep(800)  #DEBUG
 
     #push the truck onto the latch
-    robot.straight(120)
+    robot.straight(150)
 
     #back up to push unused capacity - the wait is how long it turns
-    robot.drive(speed=-1000, turn_rate=50)
+    robot.drive(speed=-1000, turn_rate=30)
     wait(1200)
     robot.straight(-300)
     robot.stop()
@@ -282,19 +286,34 @@ def innovationmodel():
     robot.straight(1130)
 
     #turn towards circle
-    robot.turn(-50)
+    #robot.turn(-50) #12-5-21 lmh
+    robot.turn(-100)  #12-6-21 -kahk
 
-    #drive back a tiny bit
-    robot.straight(-70)
+    #drive forward a litttle bit # 
+    robot.straight(30)  #12-6-21 -kahk
+
+    #drive back a tiny bit dropping drone box
+    #robot.straight(-70) #12-5-21 -lmh
+    robot.straight(-100)  #12-6-21 -kahk
 
     #turn toward door
-    robot.turn(160)
+    #robot.turn(160) #12-5-21 -lmh
+    robot.turn(190)  #12-6-21 -kahk 220 190
 
     #drive toward door
-    robot.straight(350)
+    robot.straight(380)
+
+    #turn back toward door #12-6-21 -kahk
+    robot.turn(-50)  
+
+    #drive toward door
+    robot.straight(100)
 
     #deliver package
     packagedispenser()
+
+    #drive back a tiny bit
+    robot.straight(-70)
 
 
 # ---------------------------------------------------------------
@@ -437,7 +456,7 @@ def run1b():
 
 # ---------------------------------------------------------------
 # This is the function for our first set of misions using line 
-# following anf forklift
+# following and forklift
 # 1. Flip Engine 
 # 2. Cargo Plane
 # ---------------------------------------------------------------
@@ -526,7 +545,7 @@ while True:
 
     elif button == Button.DOWN:
         innovationmodel()
-        #packagedispenser()  this an example of how we tested our code using reusable functions
+        #packagedispenser()  #this an example of how we tested our code using reusable functions
         
 
     elif button == Button.CENTER:
