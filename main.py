@@ -245,7 +245,7 @@ def plattooningtrucks():
     #turn toward the other truck.  The wait is how long it turns
     #robot.drive(speed=75, turn_rate=40)
     robot.drive(speed=75, turn_rate=30)
-    wait(1400) #2400
+    wait(1400) #2400 ipk
     ev3.speaker.beep(800)  #DEBUG
 
     #push the truck onto the latch
@@ -298,7 +298,7 @@ def innovationmodel():
 
     #turn toward door
     #robot.turn(160) #12-5-21 -lmh
-    robot.turn(190)  #12-6-21 -kahk 220 190
+    robot.turn(190)  #12-6-21 -kahk ipk 220 190
 
     #drive toward door
     robot.straight(380)
