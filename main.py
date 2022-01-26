@@ -32,10 +32,12 @@
 # 12-05-21 ipk  created package dispenser reusable function
 # 12-06-21 kahk worked more tweaking innovation model mission
 # 12-10-21 ipk  tweaks for clean wheels
-# ********* STATE *********
+# ********* Going to STATE! *********
 # 12-17-21 kahk fixed the runs after making slight adjustments to the wheels
 # 12-18-21 ipk  added gyro code and trying it on platooning trucks
 # 01-02-22 ipk  changed menu system for more items
+# 01-18-22 kahk follow_line2 
+# 01-25-22 ipk  made new_run function
 # 
 # clean up comments and add watch values function?
 # 
@@ -58,6 +60,11 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 from menu import wait_for_button
 from menu import make_screen
 
+RIGHT_SENSOR_WHITE=90
+LEFT_SENSOR_WHITE=90
+RIGHT_SENSOR_BLACK=8
+LEFT_SENSOR_BLACK=8
+
 # Initialize the EV3.
 ev3 = EV3Brick()
 
@@ -66,9 +73,9 @@ am = Motor(Port.C)
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.D)
 
-# Initialize the sensors
-line_sensor = ColorSensor(Port.S2)
-line_sensor2 = ColorSensor(Port.S4)
+# Initialize the sensors 
+line_sensor = right_line_sensor = ColorSensor(Port.S2)
+left_line_sensor = ColorSensor(Port.S4)
 gyro_sensor = GyroSensor(Port.S3, Direction.CLOCKWISE)
 
 # Initialize the drive base. ecv put in measurements 9/28 kahk chg 12/17 (9cm=90mm) (8.8cm=88mm)
@@ -219,6 +226,59 @@ def followline(loop, speed):
     #stop and exit
     robot.stop()
 
+def follow_line2( distance, speed = 80, right_or_left_sensor = "right", side_of_line = "left", Kp = 0.8, Ki = 0.0008, Kd =.001):
+    '''
+    Version 2 of the Digital Magic function to follow a line.  This version by Koen on 12-18-2020 to make it a PID line follower
+    and use 2 sensors!
+
+    Parameters:
+        distance - mm you want robot to travel
+        speed - speed of robot.
+        right_or_left_sensor - which sensor are you using ("right" or "left")
+        side_of_line = which side of black line are you following ("right" or "left") 
+        Kp - proportional gain
+        Ki - integral gain 
+        Kd - derivative gain      
+    '''
+
+    integral = 0
+    derivative = 0
+    last_error = 0
+
+        
+    if (right_or_left_sensor == "right"):
+        sensor = right_line_sensor
+        target = (RIGHT_SENSOR_WHITE + RIGHT_SENSOR_BLACK) / 2
+    else:
+        sensor = left_line_sensor
+        target = (LEFT_SENSOR_WHITE + LEFT_SENSOR_BLACK) / 2
+
+    robot.reset()
+    robot.stop()
+
+    # PID feedback loop
+    while robot.state()[0] < distance:
+        
+        error = sensor.reflection() - target
+        integral = integral + error
+        derivative = error - last_error
+        
+        # this is where the digital magic of a PID line follower happens
+        turn_rate = Kp * error + Ki * integral + Kd * derivative
+        if side_of_line == "left":
+            print(speed - turn_rate)
+            right_motor.run(speed - turn_rate)
+            left_motor.run(speed + turn_rate)
+        else:
+            right_motor.run(speed + turn_rate)
+            left_motor.run(speed - turn_rate)
+        last_error = error
+        wait(10)
+
+    robot.stop()  #make sure this is outside the loop!!
+
+
+
 #***** OUR MISSION FUNCTIONS START HERE *****
 # ---------------------------------------------------------------
 # This is a simplified function from old run_number1b() that just does Flip Engine 
@@ -240,7 +300,9 @@ def flip_engine():
     robot.turn(48)
     robot.straight(55)
 
-    # Lift the attachment fliping moto(speed=-500,time=1700)
+    # Lift the attachment fliping motor
+    am.runtime(speed=1500,time=1200)
+
     
     #bring it on home fast
     robot.turn(-50)
@@ -371,13 +433,13 @@ def innovation_model():
     robot.turn(90) ## NEED COMMENT
 
     #drive toward door
-    robot.straight(380)
+    robot.straight(340)
 
     #turn back toward door #12-6-21 -kahk
     robot.turn(-40)  
 
     #drive toward door
-    robot.straight(100)
+    robot.straight(70)
 
     #deliver package
     packagedispenser()
@@ -553,6 +615,21 @@ def run1c():
 
     #robot.turn(-90)
 
+def new_run():
+    '''
+    This is the new run for state by ipk that goes to the eastern side of the board and does missions
+    '''
+    #position the attachment arm
+    am.run_time(speed=-400,time=800)
+    
+    #go to line
+    robot.straight(170)
+
+    #follow line
+    follow_line2(distance=730, speed = 120, right_or_left_sensor = "right", side_of_line = "left", Kp = 0.6, Ki = 0.0008, Kd = 2.0)
+
+    print('Hello')
+
 def watch_sensors():
     wait(1000)
     gyro_sensor.reset_angle(0)
@@ -565,9 +642,9 @@ def watch_sensors():
         ev3.screen.draw_text(1, 1, "Gyro:")
         ev3.screen.draw_text(100, 1, gyro_sensor.angle())
         ev3.screen.draw_text(1, 20, "R Line:")
-        ev3.screen.draw_text(100, 20, line_sensor.reflection())
+        ev3.screen.draw_text(100, 20, right_line_sensor.reflection())
         ev3.screen.draw_text(1, 40, "L Line:")
-        ev3.screen.draw_text(100, 40, line_sensor2.reflection())
+        ev3.screen.draw_text(100, 40, left_line_sensor.reflection())
         ev3.screen.draw_text(1, 60, "R Motor:")
         ev3.screen.draw_text(100, 60, right_motor.angle())
         ev3.screen.draw_text(1, 80, "L Motor:")
@@ -580,6 +657,13 @@ def watch_sensors():
     while any(ev3.buttons.pressed()):
         pass
 
+def blade():
+    
+    robot.drive(distance = 50, speed = 500, turn_rate = 90)
+    robot.wait(750)
+    robot.drive(distance = 380, speed = 500, turn_rate = 10)
+    robot.drive(distance = 500, speed = -500, turn_rate = 0)
+
 
 # ---------------------------------------------------------------
 # This is the menu system (changed from the example code)
@@ -590,10 +674,12 @@ ev3.speaker.beep(900)
 ev3.speaker.beep(100)
 ev3.speaker.beep(900)
 
+
+
 while True:
     # Draw screen based on what run we are on
     if run_number == 0:
-        make_screen(ev3,"Check Sensors", " +  -  -  -  -  -  -",  "White 90-100", "Black 0 - 10","You Got This!","Go Magic!")
+        make_screen(ev3,"New Run", " +  -  -  -  -  -  -",  "", "","You Got This!","Go Digital Magic!")
 
     elif run_number == 1:
         make_screen(ev3,"Platooning Trucks", " -  +  -  -  -  -  -", "Load Truck", "Catch Line Right","Check Boundry","Returns Hot")
@@ -611,7 +697,7 @@ while True:
         make_screen(ev3,"Innovation Model", " -  -  -  -  -  +  -", "Package!", "Just in Bounds","Three Sides","Rescue?")
     
     elif run_number == 6:
-        make_screen(ev3,"Something New"," -  -  -  -  -  -  + ","Menu Code", "Looping!","Anyone?","Anyone?")
+        make_screen(ev3,"Something New"," -  -  -  -  -  -  + ","Menu Code", "Looping!","Anyone?","Ian is here")
 
     # Wait for one button to be selected.
     button = wait_for_button(ev3)
@@ -643,8 +729,8 @@ while True:
 
     elif button == Button.CENTER:
         if run_number == 0:
-            watch_sensors()
-
+            new_run()
+            #followline2( 1300, speed = 120, right_or_left_sensor = "left", side_of_line = "left", Kp = 1.0, Ki = 0.0008, Kd =.001)
         elif run_number == 1:
             plattooning_trucks()
 
@@ -661,7 +747,7 @@ while True:
             innovation_model()
 
         elif run_number == 6:
-            ev3.speaker.beep(800)
+            blade()
 
         # Move on to next run screen
         if run_number < last_run_number: 
