@@ -1,5 +1,6 @@
 #!/usr/bin/env pybricks-micropython
 
+
 # ---------------------------------------------------------------
 # This is our 2021 digital magic missions code
 # Change log:
@@ -38,8 +39,8 @@
 # 01-02-22 ipk  changed menu system for more items
 # 01-18-22 kahk follow_line2 
 # 01-25-22 ipk  made new_run function
-# 
-# clean up comments and add watch values function?
+# 02-01-22 lmh  more new_run
+# 02-15-22 
 # 
 # ---------------------------------------------------------------
  
@@ -96,13 +97,13 @@ last_run_number = 6
 # These are our reusable functions Ian will explain
 # ---------------------------------------------------------------
 
-# ---------------------------------------------------------------
-# This is the function for turning with the gyro sensor
-# Shared from FLL Team 50697 Pigeons of London, Ontario
-# https://github.com/fll-pigeons/gamechangers/blob/master/programs/1_benchbocciabasket.py
-# ---------------------------------------------------------------
 
 def gyro_turn(angle, speed=150):
+    # ---------------------------------------------------------------
+    # This is the function for turning with the gyro sensor
+    # Shared from FLL Team 50697 Pigeons of London, Ontario
+    # https://github.com/fll-pigeons/gamechangers/blob/master/programs/1_benchbocciabasket.py
+    # ---------------------------------------------------------------
     gyro_sensor.reset_angle(0)
     print("initial " + str(angle))
     if angle < 0:
@@ -122,12 +123,13 @@ def gyro_turn(angle, speed=150):
     left_motor.brake()
     right_motor.brake()
 
-# ---------------------------------------------------------------
-# This is the function for driving straight with the gyro sensor
-# Shared from FLL Team 50697 Pigeons of London, Ontario
-# https://github.com/fll-pigeons/gamechangers/blob/master/programs/1_benchbocciabasket.py
-# ---------------------------------------------------------------
 def gyro_straight(distance, robotSpeed=150):
+    # ---------------------------------------------------------------
+    # This is the function for driving straight with the gyro sensor
+    # Shared from FLL Team 50697 Pigeons of London, Ontario
+    # https://github.com/fll-pigeons/gamechangers/blob/master/programs/1_benchbocciabasket.py
+    # ---------------------------------------------------------------
+
     robot.reset() 
     gyro_sensor.reset_angle(0)
     left_motor.reset_angle(0)
@@ -150,38 +152,42 @@ def gyro_straight(distance, robotSpeed=150):
             wait(10)            
     robot.stop()
 
-# ---------------------------------------------------------------
-# This is the reusable function for changing the straight drive speed
-#  Example: straightspeed(100) to change speed to 100 mm/second
-# ---------------------------------------------------------------
 def straightspeed(speed):
+    # ---------------------------------------------------------------
+    # This is the reusable function for changing the straight drive speed
+    #  Example: straightspeed(100) to change speed to 100 mm/second
+    # ---------------------------------------------------------------
+
     straight_speed = speed
     robot.stop()
     robot.settings(straight_speed, straight_acceleration, turn_rate, turn_acceleration)    
-    
-# ---------------------------------------------------------------
-# This is the function for the forklift retrofitted from last year
-# ---------------------------------------------------------------
+  
 def forkliftmove(direction,time):
+    # ---------------------------------------------------------------
+    # This is the function for the forklift retrofitted from last year
+    # ---------------------------------------------------------------
+
     speed=200000
     if direction == "down":
         speed = speed * -1
 
     am.run_time(speed,time)
 
-# ---------------------------------------------------------------
-# This is the reusable function for the package dispenser
-# ---------------------------------------------------------------
 def packagedispenser():
+    # ---------------------------------------------------------------
+    # This is the reusable function for the package dispenser
+    # ---------------------------------------------------------------
+
     am.run_time(-2000,700)# speed and time, negative is dispense
     am.run_time(2000,700)# speed and time, positive is reset
 
-# ---------------------------------------------------------------
-# This is the function to follow line. from example
-#   loop = how many times we loop = distance travelled
-#   speed = how fast it follows the line
-# ---------------------------------------------------------------
 def followline(loop, speed):
+    # ---------------------------------------------------------------
+    # This is the function to follow line. Copied from example code
+    #   loop = how many times we loop = distance travelled
+    #   speed = how fast it follows the line
+    # ---------------------------------------------------------------
+
     # Calculate the light threshold. Choose values based on your measurements.
     # all black and all white values can be read from brick
     BLACK = 9
@@ -266,7 +272,7 @@ def follow_line2( distance, speed = 80, right_or_left_sensor = "right", side_of_
         # this is where the digital magic of a PID line follower happens
         turn_rate = Kp * error + Ki * integral + Kd * derivative
         if side_of_line == "left":
-            print(speed - turn_rate)
+            #print(speed - turn_rate)
             right_motor.run(speed - turn_rate)
             left_motor.run(speed + turn_rate)
         else:
@@ -280,10 +286,12 @@ def follow_line2( distance, speed = 80, right_or_left_sensor = "right", side_of_
 
 
 #***** OUR MISSION FUNCTIONS START HERE *****
-# ---------------------------------------------------------------
-# This is a simplified function from old run_number1b() that just does Flip Engine 
-# ---------------------------------------------------------------
+
 def flip_engine():
+    # ---------------------------------------------------------------
+    # way more simple cargo plane only function
+    # This is a simplified function from old run_number1b() that just does Flip Engine 
+    # ---------------------------------------------------------------
 
     #set the speed
     straightspeed(109)
@@ -297,11 +305,11 @@ def flip_engine():
     
     #drive strait ahead then to motor
     robot.straight(210)
-    robot.turn(48)
-    robot.straight(55)
+    robot.turn(40)
+    robot.straight(46)
 
     # Lift the attachment fliping motor
-    am.runtime(speed=1500,time=1200)
+    am.run_time(speed = -1500,time=1200)
 
     
     #bring it on home fast
@@ -309,22 +317,19 @@ def flip_engine():
     straightspeed(500)
     robot.straight(-800)
 
-# ---------------------------------------------------------------
-# way more simple cargo plane only function
-# ---------------------------------------------------------------
 def cargo_plane():
 
     #position the attachment arm
-    am.run_time(speed=250,time=900)
+    am.run_time(speed=250,time=950)
 
     #must stop to change speed
     robot.stop()
 
     #set the speed
-    straightspeed(109)
+    straightspeed(200)
 
     #drive to line 
-    robot.straight(680)
+    robot.straight(655)
     ev3.speaker.beep(800)  
     
     #bring da hammer down slightly
@@ -337,10 +342,10 @@ def cargo_plane():
     straightspeed(500)
     robot.straight(-750)
 
-# ---------------------------------------------------------------
-# This is the function for plattooning trucks  
-# ---------------------------------------------------------------
 def plattooning_trucks(): 
+    # ---------------------------------------------------------------
+    # This is the function for plattooning trucks  
+    # ---------------------------------------------------------------
 
     #set the speed
     straightspeed(109)
@@ -371,10 +376,11 @@ def plattooning_trucks():
     robot.straight(-300)
     robot.stop()
 
-# ---------------------------------------------------------------
-# This is 2nd version of the function for plattooning trucks  
-# ---------------------------------------------------------------
 def plattooning_trucks2(): 
+
+    # ---------------------------------------------------------------
+    # This is 2nd version of the function for plattooning trucks testing gyro
+    # ---------------------------------------------------------------
 
     #drive straight out and turn toward other truck and then straight again to latch
     print("Drive North")
@@ -389,10 +395,10 @@ def plattooning_trucks2():
     #gyro_straight(400, robotSpeed=80)
     robot.straight(400)
 
-# ---------------------------------------------------------------
-# This is the function for connect cargo   
-# ---------------------------------------------------------------
-def connect_cargo(): 
+def connect_cargo():
+    # ---------------------------------------------------------------
+    # This is the function for connect cargo   
+    # --------------------------------------------------------------- 
 
     #set the speed
     straightspeed(200)
@@ -403,10 +409,10 @@ def connect_cargo():
     #drive back 
     robot.straight(-700)
 
-# ---------------------------------------------------------------
-# This is the function for delivering innovation model  
-# ---------------------------------------------------------------
 def innovation_model(): 
+    # ---------------------------------------------------------------
+    # This is the function for delivering innovation model  
+    # ---------------------------------------------------------------
 
     #set the speed
     straightspeed(130)
@@ -447,12 +453,13 @@ def innovation_model():
     #drive back a tiny bit
     robot.straight(-70)
 
-# ---------------------------------------------------------------
-# This is function for our first set of misions 
-# 1. Flip Engine 
-# 2. Cargo Plane
-# ---------------------------------------------------------------
 def run1():
+    # ---------------------------------------------------------------
+    # This is function for our first set of misions 
+    # 1. Flip Engine 
+    # 2. Cargo Plane
+    # ---------------------------------------------------------------
+
     #turn the speed down a little from default
     straightspeed(100)
 
@@ -487,13 +494,13 @@ def run1():
     # turn and face the plane
     robot.turn(-90)
 
-# ---------------------------------------------------------------
-# This is function for our first set of misions but with a different 
-# strategy using line following.
-# 1. Flip Engine 
-# 2. Cargo Plane
-# ---------------------------------------------------------------
 def run1b():
+    # ---------------------------------------------------------------
+    # This is function for our first set of misions but with a different 
+    # strategy using line following.
+    # 1. Flip Engine 
+    # 2. Cargo Plane
+    # ---------------------------------------------------------------
 
     robot.stop()
     #turn the speed down a little from default
@@ -554,13 +561,14 @@ def run1b():
 
     robot.turn(-90)
 
-# ---------------------------------------------------------------
-# This is the function for our first set of misions using line 
-# following and forklift
-# 1. Flip Engine 
-# 2. Cargo Plane
-# ---------------------------------------------------------------
 def run1c():
+    # ---------------------------------------------------------------
+    # This is the function for our first set of misions using line 
+    # following and forklift
+    # 1. Flip Engine 
+    # 2. Cargo Plane
+    # ---------------------------------------------------------------
+
     # ev3.speaker.beep(800)
     # test forklift 7000 is max range
     # forkliftmove("up",7000)
@@ -628,7 +636,36 @@ def new_run():
     #follow line
     follow_line2(distance=730, speed = 120, right_or_left_sensor = "right", side_of_line = "left", Kp = 0.6, Ki = 0.0008, Kd = 2.0)
 
-    print('Hello')
+    #lower arm
+    am.run_time(speed=400,time=600)
+
+    #knock over bridge
+    robot.straight(80)
+
+    #position the attachment arm
+    am.run_time(speed=-400,time=600)
+
+    #drive ahead
+    robot.straight(270)
+
+    #lower arm
+    am.run_time(speed=400,time=600)
+
+    #backup into bridge
+    robot.straight(-130)
+
+    #position the attachment arm
+    am.run_time(speed=-400,time=800)
+
+    #follow line to hellacopter
+    follow_line2(distance=800, speed = 120, right_or_left_sensor = "right", side_of_line = "left", Kp = 0.6, Ki = 0.0008, Kd = 2.0)
+
+    
+    #backup a little
+    robot.straight(-100)
+
+
+    robot.turn(90)
 
 def watch_sensors():
     wait(1000)
@@ -659,22 +696,24 @@ def watch_sensors():
 
 def blade():
     
-    robot.drive(distance = 50, speed = 500, turn_rate = 90)
-    robot.wait(750)
-    robot.drive(distance = 380, speed = 500, turn_rate = 10)
-    robot.drive(distance = 500, speed = -500, turn_rate = 0)
-
+    robot.drive(speed = 500, turn_rate = 90)
+    wait(1000)
+    robot.stop()
+    ev3.speaker.beep(800)  
+    robot.drive(speed = 500, turn_rate = 10)
+    wait(750)
+    robot.drive(speed = -500, turn_rate = 0)
+    wait(750)
+    robot.stop()
 
 # ---------------------------------------------------------------
-# This is the menu system (changed from the example code)
+# This is the menu system (changed from the example code by Ian)
 # ---------------------------------------------------------------
 
 ev3.speaker.beep(100)
 ev3.speaker.beep(900)
 ev3.speaker.beep(100)
 ev3.speaker.beep(900)
-
-
 
 while True:
     # Draw screen based on what run we are on
@@ -685,7 +724,7 @@ while True:
         make_screen(ev3,"Platooning Trucks", " -  +  -  -  -  -  -", "Load Truck", "Catch Line Right","Check Boundry","Returns Hot")
 
     elif run_number == 2:
-        make_screen(ev3,"Flip Engine", " -  -  +  -  -  -  -", "Catch Line Right", "Fill Blue","Pray for Turn","Returns Hot")
+        make_screen(ev3,"Flip Engine", " -  -  +  -  -  -  -", "Right Sensor", "Left Side Line","Fill Blue","Returns Hot")
 
     elif run_number == 3:
         make_screen(ev3,"Cargo Plane", " -  -  -  +  -  -  -", "Aim for Bar", "Jump Up n Down","Let's Go!","Returns Hot")
@@ -697,7 +736,7 @@ while True:
         make_screen(ev3,"Innovation Model", " -  -  -  -  -  +  -", "Package!", "Just in Bounds","Three Sides","Rescue?")
     
     elif run_number == 6:
-        make_screen(ev3,"Something New"," -  -  -  -  -  -  + ","Menu Code", "Looping!","Anyone?","Ian is here")
+        make_screen(ev3,"Blade"," -  -  -  -  -  -  + ","Bumper 2 Line", "Keep Orange In"," "," ")
 
     # Wait for one button to be selected.
     button = wait_for_button(ev3)
