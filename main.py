@@ -40,8 +40,8 @@
 # 01-18-22 kahk follow_line2 
 # 01-25-22 ipk  made new_run function
 # 02-01-22 lmh  more new_run
-# 02-15-22 
-# 
+# 02-15-22 cjh  more new_run YAY!
+# 02-15-22 dlc  more new_run 
 # ---------------------------------------------------------------
  
 # ---------------------------------------------------------------
@@ -96,7 +96,6 @@ last_run_number = 6
 # ---------------------------------------------------------------
 # These are our reusable functions Ian will explain
 # ---------------------------------------------------------------
-
 
 def gyro_turn(angle, speed=150):
     # ---------------------------------------------------------------
@@ -283,9 +282,9 @@ def follow_line2( distance, speed = 80, right_or_left_sensor = "right", side_of_
 
     robot.stop()  #make sure this is outside the loop!!
 
-
-
-#***** OUR MISSION FUNCTIONS START HERE *****
+# ---------------------------------------------------------------
+# OUR MISSION FUNCTIONS START HERE
+# ---------------------------------------------------------------
 
 def flip_engine():
     # ---------------------------------------------------------------
@@ -664,8 +663,43 @@ def new_run():
     #backup a little
     robot.straight(-100)
 
+    #turn and catch line
+    robot.turn(85)
+    robot.straight(60)
+    ev3.speaker.beep(200)  # DEBUG BEEP 1
 
-    robot.turn(90)
+    #follow line to bridge
+    follow_line2(distance=350, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = 1.0, Ki = 0.0008, Kd = 2.0)
+
+    #lower arm to bridge
+    am.run_time(speed=-400,time=1100)
+
+    #raise arm
+    am.run_time(speed=400,time=1100)
+
+    #backup to catch train
+    robot.straight(-200)    
+
+    #lower arm
+    am.run_time(speed=-400,time=800)
+
+    #pull train
+    follow_line2(distance=220, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = .8, Ki = 0.0008, Kd = 2.0)
+
+    #raise arm
+    am.run_time(speed=400,time=800)
+
+    #backup to catch train
+    robot.straight(-200)
+
+    #lower arm
+    am.run_time(speed=-400,time=800)
+
+    #pull train
+    follow_line2(distance=250, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = .8, Ki = 0.0008, Kd = 2.0)
+
+
+
 
 def watch_sensors():
     wait(1000)
@@ -701,9 +735,9 @@ def blade():
     robot.stop()
     ev3.speaker.beep(800)  
     robot.drive(speed = 500, turn_rate = 10)
-    wait(750)
+    wait(2500)
     robot.drive(speed = -500, turn_rate = 0)
-    wait(750)
+    wait(8000)
     robot.stop()
 
 # ---------------------------------------------------------------
@@ -718,7 +752,7 @@ ev3.speaker.beep(900)
 while True:
     # Draw screen based on what run we are on
     if run_number == 0:
-        make_screen(ev3,"New Run", " +  -  -  -  -  -  -",  "", "","You Got This!","Go Digital Magic!")
+        make_screen(ev3,"New Run", " +  -  -  -  -  -  -",  "Right Sensor", "Arm Down","You Got This!","Go Digital Magic!")
 
     elif run_number == 1:
         make_screen(ev3,"Platooning Trucks", " -  +  -  -  -  -  -", "Load Truck", "Catch Line Right","Check Boundry","Returns Hot")
