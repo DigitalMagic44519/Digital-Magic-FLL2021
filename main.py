@@ -91,7 +91,7 @@ turn_acceleration = 1600
 
 # menu variables by Ian
 run_number = 0
-last_run_number = 6 
+last_run_number = 7 
 
 # ---------------------------------------------------------------
 # These are our reusable functions Ian will explain
@@ -438,7 +438,7 @@ def innovation_model():
     robot.turn(90) ## NEED COMMENT
 
     #drive toward door
-    robot.straight(340)
+    robot.straight(250)
 
     #turn back toward door #12-6-21 -kahk
     robot.turn(-40)  
@@ -653,13 +653,15 @@ def new_run():
     #backup into bridge
     robot.straight(-130)
 
+    #a little turn
+    robot.turn(5)
+
     #position the attachment arm
     am.run_time(speed=-400,time=800)
 
     #follow line to hellacopter
-    follow_line2(distance=800, speed = 120, right_or_left_sensor = "right", side_of_line = "left", Kp = 0.6, Ki = 0.0008, Kd = 2.0)
+    follow_line2(distance=800, speed = 120, right_or_left_sensor = "right", side_of_line = "left", Kp = 0.8, Ki = 0.0008, Kd = 2.0)
 
-    
     #backup a little
     robot.straight(-100)
 
@@ -668,10 +670,12 @@ def new_run():
     robot.straight(60)
     ev3.speaker.beep(200)  # DEBUG BEEP 1
 
-    #follow line to bridge
-    follow_line2(distance=350, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = 1.0, Ki = 0.0008, Kd = 2.0)
+    #follow line to rr bridge
+    follow_line2(distance=50, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = 1.0, Ki = 0.0008, Kd = 2.0)
+    ev3.speaker.beep(200)  # DEBUG BEEP 1
+    follow_line2(distance=300, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = .8, Ki = 0.0008, Kd = 2.0)
 
-    #lower arm to bridge
+    #lower arm to rr bridge
     am.run_time(speed=-400,time=1100)
 
     #raise arm
@@ -690,16 +694,13 @@ def new_run():
     am.run_time(speed=400,time=800)
 
     #backup to catch train
-    robot.straight(-200)
+    robot.straight(-220)
 
     #lower arm
     am.run_time(speed=-400,time=800)
 
     #pull train
     follow_line2(distance=250, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = .8, Ki = 0.0008, Kd = 2.0)
-
-
-
 
 def watch_sensors():
     wait(1000)
@@ -755,7 +756,7 @@ while True:
         make_screen(ev3,"New Run", " +  -  -  -  -  -  -",  "Right Sensor", "Arm Down","You Got This!","Go Digital Magic!")
 
     elif run_number == 1:
-        make_screen(ev3,"Platooning Trucks", " -  +  -  -  -  -  -", "Load Truck", "Catch Line Right","Check Boundry","Returns Hot")
+        make_screen(ev3,"Platooning Trucks", " -  +  -  -  -  -  -", "Load Truck", "Right Sensor","Left Side Ln","Returns Hot")
 
     elif run_number == 2:
         make_screen(ev3,"Flip Engine", " -  -  +  -  -  -  -", "Right Sensor", "Left Side Line","Fill Blue","Returns Hot")
@@ -763,14 +764,17 @@ while True:
     elif run_number == 3:
         make_screen(ev3,"Cargo Plane", " -  -  -  +  -  -  -", "Aim for Bar", "Jump Up n Down","Let's Go!","Returns Hot")
 
-    elif run_number == 4:
+    elif run_number == 5:
         make_screen(ev3,"Deliver Cargo", " -  -  -  -  +  -  -", "Aim for Circle", "Dance","Cheer","Returns Hot")
 
-    elif run_number == 5:
+    elif run_number == 6:
         make_screen(ev3,"Innovation Model", " -  -  -  -  -  +  -", "Package!", "Just in Bounds","Three Sides","Rescue?")
     
-    elif run_number == 6:
+    elif run_number == 4:
         make_screen(ev3,"Blade"," -  -  -  -  -  -  + ","Bumper 2 Line", "Keep Orange In"," "," ")
+
+    elif run_number == 7:
+        make_screen(ev3,"Watch Sensors"," -  -  -  -  -  -  + ","", ""," "," ")
 
     # Wait for one button to be selected.
     button = wait_for_button(ev3)
@@ -813,14 +817,17 @@ while True:
         elif run_number == 3:
             cargo_plane()
 
-        elif run_number == 4:
+        elif run_number == 5:
             connect_cargo()
 
-        elif run_number == 5:
+        elif run_number == 6:
             innovation_model()
 
-        elif run_number == 6:
+        elif run_number == 4:
             blade()
+
+        elif run_number == 7:
+            watch_sensors()
 
         # Move on to next run screen
         if run_number < last_run_number: 
