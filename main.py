@@ -671,9 +671,7 @@ def new_run():
     ev3.speaker.beep(200)  # DEBUG BEEP 1
 
     #follow line to rr bridge
-    follow_line2(distance=50, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = 1.0, Ki = 0.0008, Kd = 2.0)
-    ev3.speaker.beep(200)  # DEBUG BEEP 1
-    follow_line2(distance=300, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = .8, Ki = 0.0008, Kd = 2.0)
+    follow_line2(distance=350, speed = 80, right_or_left_sensor = "left", side_of_line = "right", Kp = 1.0, Ki = 0.0008, Kd = 2.0)
 
     #lower arm to rr bridge
     am.run_time(speed=-400,time=1100)
@@ -731,14 +729,14 @@ def watch_sensors():
 
 def blade():
     
-    robot.drive(speed = 500, turn_rate = 90)
+    robot.drive(speed = 500, turn_rate = 70)
     wait(1000)
     robot.stop()
     ev3.speaker.beep(800)  
     robot.drive(speed = 500, turn_rate = 10)
-    wait(2500)
+    wait(1500)
     robot.drive(speed = -500, turn_rate = 0)
-    wait(8000)
+    wait(3000)
     robot.stop()
 
 # ---------------------------------------------------------------
@@ -762,7 +760,7 @@ while True:
         make_screen(ev3,"Flip Engine", " -  -  +  -  -  -  -", "Right Sensor", "Left Side Line","Fill Blue","Returns Hot")
 
     elif run_number == 3:
-        make_screen(ev3,"Cargo Plane", " -  -  -  +  -  -  -", "Aim for Bar", "Jump Up n Down","Let's Go!","Returns Hot")
+        make_screen(ev3,"Cargo Plane", " -  -  -  +  -  -  -", "Aim for Bar", "Arm Up","Let's Go!","Returns Hot")
 
     elif run_number == 5:
         make_screen(ev3,"Deliver Cargo", " -  -  -  -  +  -  -", "Aim for Circle", "Dance","Cheer","Returns Hot")
